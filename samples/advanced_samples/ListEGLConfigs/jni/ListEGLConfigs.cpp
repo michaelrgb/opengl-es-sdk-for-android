@@ -31,11 +31,13 @@
 #include <cstdlib>
 #include <cstdio>
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
 
-#include "Platform.h"
 #include "AndroidPlatform.h"
+#endif
+#include "Platform.h"
 
 using namespace MaliSDK;
 
@@ -272,6 +274,7 @@ bool listConfigs(void)
     return true;
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_listeglconfigs_ListEGLConfigs_init
@@ -292,3 +295,10 @@ extern "C"
     
     }
 }
+#else
+int main()
+{
+    listConfigs();
+    return 0;
+}
+#endif

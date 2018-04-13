@@ -314,6 +314,13 @@ namespace MaliSDK
             LOGE("Failed to create EGL context at %s:%i\n", __FILE__, __LINE__);
             exit(1);
         }
+
+        eglMakeCurrent(display, surface, surface, context);
+    }
+
+    void EGLRuntime::swapBuffers()
+    {
+        eglSwapBuffers(display, surface);
     }
 
     void EGLRuntime::setEGLSamples(EGLint requiredEGLSamples)

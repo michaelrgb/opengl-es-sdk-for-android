@@ -128,6 +128,8 @@ namespace MaliSDK
          * \param[in] requestedAPIVersion The API version required (OpenGL ES 1.x or OpenGLES 2.0).
          */
         static void initializeEGL(OpenGLESVersion requestedAPIVersion);
+
+        static void swapBuffers();
         
         /**
          * \brief Shuts down EGL.

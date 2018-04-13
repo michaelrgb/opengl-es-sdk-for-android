@@ -18,8 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+
+#define LOG_TAG "libNative"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+#else
+#include "Platform.h"
+#endif
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -29,10 +38,6 @@
 #include <cmath>
 
 #include "Matrix.h"
-
-#define LOG_TAG "libNative"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 /* [vertexShader] */
 static const char  glVertexShader[] =
@@ -264,6 +269,8 @@ void renderFrame()
         angle -= 360;
     }
 }
+
+#ifdef __ANDROID__
 /* [renderFrame] */
 extern "C"
 {
@@ -284,3 +291,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_simplecube_NativeL
 {
     renderFrame();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

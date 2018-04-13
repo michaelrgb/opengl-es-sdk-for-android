@@ -23,6 +23,10 @@
 #include <cstdio>
 #include <cstdarg>
 
+#if defined(__linux__)
+    MaliSDK::DesktopLinuxPlatform instance;
+#endif
+
 namespace MaliSDK
 {
     Platform* Platform::getInstance(void)
@@ -32,7 +36,8 @@ namespace MaliSDK
     #elif defined(__arm__) && defined(__linux__)
         return LinuxOnARMPlatform::getInstance();
     #elif defined(__linux__)
-        return DesktopLinuxPlatform::getInstance();
+        return &instance;
+        //return DesktopLinuxPlatform::getInstance();
     #endif
     }
 

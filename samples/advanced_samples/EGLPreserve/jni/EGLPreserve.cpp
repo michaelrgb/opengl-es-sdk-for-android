@@ -42,9 +42,17 @@
 #include <EGL/egl.h>
 
 #include <string>
+using std::string;
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+#include "AndroidPlatform.h"
+string resourceDirectory = "/data/data/com.arm.malideveloper.openglessdk.eglpreserve/";
+#else
+#include "Platform.h"
+string resourceDirectory = "assets/";
+#endif
 
 #include <sys/time.h>
  
@@ -55,13 +63,10 @@
 #include "Matrix.h"
 #include "Platform.h"
 #include "Timer.h"
-#include "AndroidPlatform.h"
 
-using std::string;
 using namespace MaliSDK;
 
 /* Asset directories and filenames. */
-string resourceDirectory = "/data/data/com.arm.malideveloper.openglessdk.eglpreserve/";
 string vertexShaderFilename = "EGLPreserve_cube.vert";
 string fragmentShaderFilename = "EGLPreserve_cube.frag";
 
@@ -304,6 +309,7 @@ void renderFrame(void)
     text->draw();
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_eglpreserve_EGLPreserve_init
@@ -331,3 +337,16 @@ extern "C"
         delete text;
     }
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

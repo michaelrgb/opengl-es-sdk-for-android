@@ -18,9 +18,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef __ANDROID__
 /* [Includes] */
 #include <jni.h>
 #include <android/log.h>
+
+#define LOG_TAG "libNative"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+#else
+#include "Platform.h"
+#endif
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -29,9 +38,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define LOG_TAG "libNative"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 /* [Includes] */
 
 /* [Vertex source] */
@@ -183,6 +189,7 @@ void renderFrame()
 }
 /* [renderFrame] */
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_simpletriangle_NativeLibrary_init(
@@ -204,3 +211,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_simpletriangle_Nat
     renderFrame();
 }
 /* [Native functions] */
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif
