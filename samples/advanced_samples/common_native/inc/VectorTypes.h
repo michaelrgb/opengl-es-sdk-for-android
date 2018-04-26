@@ -80,10 +80,24 @@ namespace MaliSDK
      *
      * Class containing three floating point numbers, useful for representing 3D coordinates.
      */
+
     class Vec3f
     {
     public:
         float x, y, z;
+
+        /**
+         * \brief Calculate dot product between two 3D floating point vectors.
+         *
+         * \param[in] vector1 First floating point vector that will be used to compute product.
+         * \param[in] vector2 Second floating point vector that will be used to compute product.
+         *
+         * \return Floating point value that is a result of dot product of vector1 and vector2.
+         */
+        static float dot(Vec3f& vector1, Vec3f& vector2)
+        {
+            return (vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z);
+        }
 
         /**
          * \brief Normalize 3D floating point vector.

@@ -38,10 +38,6 @@
  *               a simple colour.
  *            d. Shadows are computed for the spot lighting (the result of the first step is now used).
  */
-
-#include <jni.h>
-#include <android/log.h>
-
 #include <GLES3/gl3.h>
 #include "Common.h"
 #include "CubeModel.h"
@@ -983,6 +979,7 @@ static void updateSpotLightDirection()
 }
 /* [Update spot light direction] */
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_projectedLights_NativeLibrary_init  (JNIEnv * env, jobject obj, jint width, jint height);
@@ -1008,3 +1005,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_projectedLights_Na
 {
     renderFrame();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES3);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

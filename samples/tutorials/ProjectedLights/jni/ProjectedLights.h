@@ -25,12 +25,18 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 
+#ifdef __ANDROID__
+#define FILES_DIR "/data/data/com.arm.malideveloper.openglessdk.projectedLights/files/"
+#else
+#define FILES_DIR "assets/"
+#endif
+
 namespace MaliSDK
 {
     /** Field of view used for projection matrix calculations [in degrees] from camera point of view. */
     #define CAMERA_PERSPECTIVE_FOV_IN_DEGREES (60.0f)
     /** Name of a bmp file where colour texture image is stored. */
-    #define COLOR_TEXTURE_NAME ("/data/data/com.arm.malideveloper.openglessdk.projectedLights/files/mali.bmp")
+    #define COLOR_TEXTURE_NAME (FILES_DIR "mali.bmp")
     /** Define a translation in x and Z space of a colour texture. */
     #define COLOR_TEXTURE_TRANSLATION (15.0f)
     /** Scaling factor used to set-up a cube geometry (indicates the size of the cube). */
@@ -40,7 +46,7 @@ namespace MaliSDK
     /** Value of the far plane used to set-up a projection view. */
     #define FAR_PLANE (50.0f)
     /** Name of a fragment shader file. */
-    #define FRAGMENT_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.projectedLights/files/render_scene_shader.frag")
+    #define FRAGMENT_SHADER_FILE_NAME (FILES_DIR "render_scene_shader.frag")
     /** Scaling factor used to set-up a cube geometry (indicates the size of the cube representing the spot light source). */
     #define LIGHT_SOURCE_SCALING_FACTOR (0.3f)
     /** Position of a model (plane and cube) on Y axis. */
@@ -60,7 +66,7 @@ namespace MaliSDK
     /** Texture unit that will be used for shadow map texture binding purposes.*/
     #define TEXTURE_UNIT_FOR_SHADOW_MAP_TEXTURE (1)
     /** Name of a vertex shader file. */
-    #define VERTEX_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.projectedLights/files/render_scene_shader.vert")
+    #define VERTEX_SHADER_FILE_NAME (FILES_DIR "render_scene_shader.vert")
 
     /** Structure holding all data needed to set the geometry properties. */
     struct GeometryProperties
