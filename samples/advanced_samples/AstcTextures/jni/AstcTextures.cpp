@@ -18,12 +18,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef __ANDROID__
 #include <jni.h>
+#else
+#include "Platform.h"
+#endif
 #include <GLES3/gl3.h>
 
 #include <cstdlib>
 #include <cmath>
 #include <string>
+#include <string.h>
 
 #include "Text.h"
 #include "AstcTextures.h"
@@ -47,7 +52,11 @@ Text* text_displayer = NULL;
 SolidSphere* solid_sphere = NULL;
 
 /* Place where all asset files are located. */
+#ifdef __ANDROID__
 const string resource_directory("/data/data/com.arm.malideveloper.openglessdk.astctextures/files/");
+#else
+const string resource_directory("assets/");
+#endif
 
 /* Window resolution. */
 int window_width  = 0;
@@ -561,11 +570,13 @@ void setup_graphics(int width, int height)
     /* Make sure the required ASTC extension is present. */
     const GLubyte* extensions = GL_CHECK(glGetString(GL_EXTENSIONS));
 
+#ifdef __ANDROID__
     if (strstr((const char*) extensions, "GL_KHR_texture_compression_astc_ldr") == NULL)
     {
         LOGI("OpenGL ES 3.0 implementation does not support GL_KHR_texture_compression_astc_ldr extension.\n");
         exit(EXIT_SUCCESS);
     }
+#endif
 
     /* Enable culling and depth testing. */
     GL_CHECK(glEnable(GL_CULL_FACE));
@@ -676,6 +687,7 @@ void cleanup_graphics(void)
     delete solid_sphere;
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_astctextures_NativeLibrary_init(JNIEnv*, jobject, jint width, jint height);
@@ -697,3 +709,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_astctextures_Nativ
 {
     cleanup_graphics();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setup_graphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        render_frame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

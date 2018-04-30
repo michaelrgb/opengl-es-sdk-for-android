@@ -115,6 +115,7 @@ namespace MaliSDK
     
 #define LOGI Platform::log 
 #define LOGE fprintf (stderr, "Error: "); Platform::log
+#define LOGF LOGE
 #ifdef DEBUG
 #define LOGD fprintf (stderr, "Debug: "); Platform::log
 #else
