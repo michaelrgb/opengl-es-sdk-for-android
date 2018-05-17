@@ -31,22 +31,27 @@
 #include <GLES2/gl2ext.h>
 
 #include <string>
+using std::string;
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h> 
+#include "AndroidPlatform.h"
+string resourceDirectory = "/data/data/com.arm.malideveloper.openglessdk.framebufferobject/";
+#else
+#include "Platform.h"
+string resourceDirectory = "assets/";
+#endif
  
 #include "FrameBufferObject.h"
 #include "Text.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Matrix.h"
-#include "AndroidPlatform.h"
 
-using std::string;
 using namespace MaliSDK;
 
 /* Asset directories and filenames. */
-string resourceDirectory = "/data/data/com.arm.malideveloper.openglessdk.framebufferobject/";
 string vertexShaderFilename = "FrameBufferObject_cube.vert";
 string fragmentShaderFilename = "FrameBufferObject_cube.frag";
 
@@ -337,6 +342,7 @@ void renderFrame(void)
     if(angleZ >= 360) angleZ -= 360;
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_framebufferobject_FrameBufferObject_init
@@ -361,3 +367,16 @@ extern "C"
         delete text;
     }
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif
