@@ -27,8 +27,10 @@
  * By using gl_instanceID in the shader, each of the cubes can have a different position, rotation speed and colour.
  * This technique can be used everywhere repeated geometry is used in a scene.
  */
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+#endif
 
 #include <GLES3/gl3.h>
 #include "Common.h"
@@ -430,6 +432,7 @@ void uninit()
     }
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_instancing_NativeLibrary_init  (JNIEnv * env, jobject obj, jint width, jint height);
@@ -455,3 +458,18 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_instancing_NativeL
 {
     renderFrame();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    for(int i = 0;
+        //i < 10
+        ; i++)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

@@ -44,8 +44,10 @@
  *        Common elements for both classes are placed in an abstract Torus class.
  */
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+#endif
 
 #include <cstdlib>
 #include <cmath>
@@ -64,7 +66,12 @@ using namespace std;
 using namespace MaliSDK;
 
 /* Asset directories and filenames */
-const string resourceDirectory = "/data/data/com.arm.malideveloper.openglessdk.instancedTessellation/files/";
+const string resourceDirectory =
+#ifdef __ANDROID__
+        "/data/data/com.arm.malideveloper.openglessdk.instancedTessellation/files/";
+#else
+        "assets/";
+#endif
 
 /* Window properties. */
 int windowWidth  = 0;
@@ -164,6 +171,7 @@ void uninit()
     delete solidTorus;
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_instancedTessellation_NativeLibrary_init  (JNIEnv*, jobject,
@@ -189,3 +197,18 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_instancedTessellat
 {
     uninit();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    for(int i = 0;
+        //i < 10
+        ; i++)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

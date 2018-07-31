@@ -23,8 +23,14 @@
 
 namespace MaliSDK
 {
+#ifdef __ANDROID__
+#define FILES "/data/data/com.arm.malideveloper.openglessdk.instancing/files/"
+#else
+#define FILES "assets/"
+#endif
+
     /** Name of a fragment shader file. */
-    #define FRAGMENT_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.instancing/files/fragment_shader_source.frag")
+    #define FRAGMENT_SHADER_FILE_NAME (FILES "fragment_shader_source.frag")
     /* Number of colour components: we will be using RGBA values. */
     #define NUMBER_OF_COLOR_COMPONENTS (4)
     /* [Define number of elements to render] */
@@ -32,6 +38,6 @@ namespace MaliSDK
     #define NUMBER_OF_CUBES (10)
 /* [Define number of elements to render] */
     /** Name of a vertex shader file. */
-    #define VERTEX_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.instancing/files/vertex_shader_source.vert")
+    #define VERTEX_SHADER_FILE_NAME (FILES "vertex_shader_source.vert")
 }
 #endif /* INSTANCING_H */

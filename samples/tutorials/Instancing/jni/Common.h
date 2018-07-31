@@ -21,7 +21,13 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifdef __ANDROID__
 #include <android/log.h>
+#else
+#include "Platform.h"
+#include <assert.h>
+#define ASSERT(x, s) assert(x);
+#endif
 #include <cstdio>
 #include <cstdlib>
 #include <GLES3/gl3.h>
@@ -46,6 +52,7 @@
         #define NUMBER_OF_TRIANGLES_IN_QUAD (2)
     #endif /* NUMBER_OF_TRIANGLES_IN_QUAD */
 
+#ifdef __ANDROID__
     #define LOG_TAG "libNative"
     #define LOGD(...) __android_log_print(ANDROID_LOG_DEBBUG, LOG_TAG, __VA_ARGS__)
     #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,  LOG_TAG, __VA_ARGS__)
@@ -56,6 +63,7 @@
             LOGE("Assertion failed at %s:%i\n%s\n", __FILE__, __LINE__, s); \
             exit(1);                                                        \
         }
+#endif
 
     #define GL_CHECK(x)                                                                              \
         x;                                                                                           \

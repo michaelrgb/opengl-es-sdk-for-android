@@ -21,7 +21,16 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifdef __ANDROID__
 #include <android/log.h>
+#define LOG_TAG "libNative"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBBUG, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,  LOG_TAG, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,   LOG_TAG, __VA_ARGS__)
+#else
+#include "Platform.h"
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <GLES3/gl3.h>
@@ -33,10 +42,6 @@
         #define M_PI 3.14159265358979323846f
     #endif /* M_PI */
 
-    #define LOG_TAG "libNative"
-    #define LOGD(...) __android_log_print(ANDROID_LOG_DEBBUG, LOG_TAG, __VA_ARGS__)
-    #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,  LOG_TAG, __VA_ARGS__)
-    #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,   LOG_TAG, __VA_ARGS__)
     #define ASSERT(x, s)                                                    \
         if (!(x))                                                           \
         {                                                                   \
