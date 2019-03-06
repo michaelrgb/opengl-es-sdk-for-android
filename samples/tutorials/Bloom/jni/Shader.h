@@ -24,7 +24,9 @@
 #include <GLES3/gl3.h>
 #include <cstdio>
 #include <cstdlib>
+#ifdef __ANDROID__
 #include <android/log.h>
+#endif
 
 #define ASSERT(x) \
     if (!(x))\

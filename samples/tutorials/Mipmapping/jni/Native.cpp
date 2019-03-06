@@ -18,8 +18,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+
+#define LOG_TAG "libNative"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#else
+#include "Platform.h"
+#endif
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -31,9 +39,6 @@
 #include "Matrix.h"
 #include "Texture.h"
 
-#define LOG_TAG "libNative"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
 static const char glVertexShader[] =
         "attribute vec4 vertexPosition;\n"
@@ -158,6 +163,12 @@ float velocity = 0.1;
 GLuint textureModeToggle = 0;
 /* [newGlobals] */
 
+#ifdef __ANDROID__
+#define FILES_DIR "/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/"
+#else
+#define FILES_DIR "assets/"
+#endif
+
 bool setupGraphics(int width, int height)
 {
     glProgram = createProgram(glVertexShader, glFragmentShader);
@@ -196,16 +207,16 @@ bool setupGraphics(int width, int height)
 
 
     /* Load the Texture. */
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level0.raw", 0, 512, 512);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level1.raw", 1, 256, 256);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level2.raw", 2, 128, 128);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level3.raw", 3, 64, 64);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level4.raw", 4, 32, 32);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level5.raw", 5, 16, 16);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level6.raw", 6, 8, 8);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level7.raw", 7, 4, 4);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level8.raw", 8, 2, 2);
-    loadTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level9.raw", 9, 1, 1);
+    loadTexture(FILES_DIR "level0.raw", 0, 512, 512);
+    loadTexture(FILES_DIR "level1.raw", 1, 256, 256);
+    loadTexture(FILES_DIR "level2.raw", 2, 128, 128);
+    loadTexture(FILES_DIR "level3.raw", 3, 64, 64);
+    loadTexture(FILES_DIR "level4.raw", 4, 32, 32);
+    loadTexture(FILES_DIR "level5.raw", 5, 16, 16);
+    loadTexture(FILES_DIR "level6.raw", 6, 8, 8);
+    loadTexture(FILES_DIR "level7.raw", 7, 4, 4);
+    loadTexture(FILES_DIR "level8.raw", 8, 2, 2);
+    loadTexture(FILES_DIR "level9.raw", 9, 1, 1);
     /* [mipmapRegularTextures] */
 
     /* [mipmapCompressedTextures] */
@@ -215,16 +226,16 @@ bool setupGraphics(int width, int height)
     /* Bind the texture object. */
     glBindTexture(GL_TEXTURE_2D, textureIds[1]);
 
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level0.pkm", 0);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level1.pkm", 1);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level2.pkm", 2);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level3.pkm", 3);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level4.pkm", 4);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level5.pkm", 5);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level6.pkm", 6);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level7.pkm", 7);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level8.pkm", 8);
-    loadCompressedTexture("/data/data/com.arm.malideveloper.openglessdk.mipmapping/files/level9.pkm", 9);
+    loadCompressedTexture(FILES_DIR "level0.pkm", 0);
+    loadCompressedTexture(FILES_DIR "level1.pkm", 1);
+    loadCompressedTexture(FILES_DIR "level2.pkm", 2);
+    loadCompressedTexture(FILES_DIR "level3.pkm", 3);
+    loadCompressedTexture(FILES_DIR "level4.pkm", 4);
+    loadCompressedTexture(FILES_DIR "level5.pkm", 5);
+    loadCompressedTexture(FILES_DIR "level6.pkm", 6);
+    loadCompressedTexture(FILES_DIR "level7.pkm", 7);
+    loadCompressedTexture(FILES_DIR "level8.pkm", 8);
+    loadCompressedTexture(FILES_DIR "level9.pkm", 9);
     /* [mipmapCompressedTextures] */
     return true;
 }
@@ -279,6 +290,7 @@ void renderFrame()
     /* [rangeOfMovement] */
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_mipmapping_NativeLibrary_init (JNIEnv * env, jobject obj, jint width, jint height);
@@ -297,3 +309,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_mipmapping_NativeL
 {
     renderFrame();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

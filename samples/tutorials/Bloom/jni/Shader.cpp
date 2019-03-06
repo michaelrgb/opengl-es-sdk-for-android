@@ -20,8 +20,12 @@
 
 #include "Shader.h"
 
+#ifdef __ANDROID__
 #define LOG_TAG "libNative"
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#else
+#define LOGE printf
+#endif
 
 namespace MaliSDK
 {

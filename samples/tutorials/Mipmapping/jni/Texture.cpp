@@ -23,13 +23,17 @@
 #include <GLES2/gl2ext.h>
 #include <cstdio>
 #include <cstdlib>
+#define CHANNELS_PER_PIXEL  3
+#ifdef __ANDROID__
 #include <android/log.h>
 
-#define CHANNELS_PER_PIXEL  3
 
 #define LOG_TAG "libNative"
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#else
+#include "Platform.h"
+#endif
 
 /* [loadTexture] */
 void loadTexture( const char * texture, unsigned int level, unsigned int width, unsigned int height)

@@ -23,7 +23,9 @@
 #include "Text.h"
 #include "Skybox.h"
 
+#ifdef __ANDROID__
 #include <jni.h>
+#endif
 #include <GLES3/gl3.h>
 #include <cstdio>
 #include <cstdlib>
@@ -160,10 +162,21 @@ void setup_graphics(int width, int height)
     window_height = height;
 
     /* Path to resource directory. */
-    const char resource_directory[] = "/data/data/com.arm.malideveloper.openglessdk.skybox/files/";
+    const char resource_directory[] =
+#ifdef __ANDROID__
+        "/data/data/com.arm.malideveloper.openglessdk.skybox/files/";
+#else
+        "assets/";
+#endif
 
     /* Path to cubemap texture. */
-    char file_name[] = "/data/data/com.arm.malideveloper.openglessdk.skybox/files/greenhouse_skybox-0.ppm";
+    char file_name[] =
+#ifdef __ANDROID__
+        "/data/data/com.arm.malideveloper.openglessdk.skybox/files/"
+#else
+        "assets/"
+#endif
+        "greenhouse_skybox-0.ppm";
 
     /* Texture cubemap targets. */
     GLenum cubemap_faces[] =
@@ -201,7 +214,13 @@ void setup_graphics(int width, int height)
     {
         if (n_face != 0)
         {
-            sprintf(file_name, "/data/data/com.arm.malideveloper.openglessdk.skybox/files/greenhouse_skybox-%d.ppm", n_face);
+            sprintf(file_name,
+#ifdef __ANDROID__
+                "/data/data/com.arm.malideveloper.openglessdk.skybox/files/"
+#else
+                "assets/"
+#endif
+                "greenhouse_skybox-%d.ppm", n_face);
 
             cubemap_image = load_ppm_file(file_name);
         }
@@ -326,6 +345,7 @@ void cleanup_graphics(void)
     GL_CHECK(glDeleteProgram(program_id));
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_skybox_NativeLibrary_init(JNIEnv*, jobject, jint width, jint height);
@@ -347,3 +367,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_skybox_NativeLibra
 {
     cleanup_graphics();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setup_graphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        render_frame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

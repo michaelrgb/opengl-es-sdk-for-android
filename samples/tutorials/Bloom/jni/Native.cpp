@@ -53,8 +53,16 @@
  */
 
 
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+
+#define LOG_TAG "libNative"
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
+#else
+#endif
 
 #include <GLES3/gl3.h>
 
@@ -1755,6 +1763,7 @@ void uninit()
     }
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_bloom_NativeLibrary_init  (JNIEnv * env, jobject obj, jint width, jint height);
@@ -1780,3 +1789,19 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_bloom_NativeLibrar
 {
     renderFrame(time);
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    float time = 0.;
+    for(;;)
+    {
+        renderFrame(time);
+        EGLRuntime::swapBuffers();
+        time += 0.01;
+    }
+    return 0;
+}
+#endif
+
