@@ -34,8 +34,10 @@
  * movement vertex shader, this data is then used as the input data on the next pass.
  * The same data is used when rendering the scene.
  */
+#ifdef __ANDROID__
 #include <jni.h>
 #include <android/log.h>
+#endif
 
 #include <GLES3/gl3.h>
 #include "Boids.h"
@@ -571,6 +573,7 @@ void uninit()
     GL_CHECK(glDeleteProgram(movementProgramId));
 }
 
+#ifdef __ANDROID__
 extern "C"
 {
     JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_boids_NativeLibrary_init  (JNIEnv * env, jobject obj, jint width, jint height);
@@ -596,3 +599,16 @@ JNIEXPORT void JNICALL Java_com_arm_malideveloper_openglessdk_boids_NativeLibrar
 {
     renderFrame();
 }
+#else
+int main()
+{
+    EGLRuntime::initializeEGL(EGLRuntime::OPENGLES2);
+    setupGraphics(WIDTH, HEIGHT);
+    while (1)
+    {
+        renderFrame();
+        EGLRuntime::swapBuffers();
+    }
+    return 0;
+}
+#endif

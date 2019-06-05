@@ -21,15 +21,21 @@
 #ifndef BOIDS_H
 #define BOIDS_H
 
+#ifdef __ANDROID__
+#define ASSETS_PATH "/data/data/com.arm.malideveloper.openglessdk.boids/files"
+#else
+#define ASSETS_PATH "assets"
+#endif
+
 namespace MaliSDK
 {
     /** Name of a fragment shader file. */
-    #define FRAGMENT_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.boids/files/fragment_shader_source.frag")
+    #define FRAGMENT_SHADER_FILE_NAME (ASSETS_PATH "/fragment_shader_source.frag")
     /** Name of a vertex shader file. */
-    #define VERTEX_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.boids/files/vertex_shader_source.vert")
+    #define VERTEX_SHADER_FILE_NAME (ASSETS_PATH "/vertex_shader_source.vert")
     /** Name of a movement fragment shader file. */
-    #define MOVEMENT_FRAGMENT_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.boids/files/movement.frag")
+    #define MOVEMENT_FRAGMENT_SHADER_FILE_NAME (ASSETS_PATH "/movement.frag")
     /** Name of a movement vertex shader file. */
-    #define MOVEMENT_VERTEX_SHADER_FILE_NAME ("/data/data/com.arm.malideveloper.openglessdk.boids/files/movement.vert")
+    #define MOVEMENT_VERTEX_SHADER_FILE_NAME (ASSETS_PATH "/movement.vert")
 }
 #endif /* BOIDS_H */
